@@ -81,7 +81,7 @@ export default function TrackingMap({ driverPosition, pickup, drop }) {
         mapInstance.current = null;
       }
     };
-  }, []);
+  }, [driverPosition, pickup, drop]);
 
   // Update driver marker position
   useEffect(() => {

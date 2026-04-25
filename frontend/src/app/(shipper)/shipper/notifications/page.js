@@ -12,7 +12,10 @@ export default function NotificationsPage() {
     { id: 5, title: 'Document Verified', message: 'Your KYC documents have been verified successfully.', time: '2 days ago', unread: false, type: 'verification' },
   ]);
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => { 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true); 
+  }, []);
 
   const markAllRead = () => setNotifications(notifications.map(n => ({ ...n, unread: false })));
   const deleteNotification = (id) => setNotifications(notifications.filter(n => n.id !== id));

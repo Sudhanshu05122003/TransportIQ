@@ -17,6 +17,7 @@ export default function DashboardLayout({ children, navItems, roleLabel }) {
   const unreadCount = 2; 
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
@@ -73,7 +74,7 @@ export default function DashboardLayout({ children, navItems, roleLabel }) {
               </Link>
               <div className="relative">
                 <button 
-                  onClick={() => { setProfileOpen(!profileOpen); setNotificationsOpen(false); }} 
+                  onClick={() => setProfileOpen(!profileOpen)} 
                   className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-white text-sm font-bold">

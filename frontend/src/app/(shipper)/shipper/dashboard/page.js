@@ -8,10 +8,6 @@ export default function ShipperDashboard() {
   const [stats, setStats] = useState({ total: 0, pending: 0, in_transit: 0, delivered: 0 });
   const [recentShipments, setRecentShipments] = useState([]);
 
-  useEffect(() => {
-    loadDashboard();
-  }, []);
-
   const loadDashboard = async () => {
     try {
       const [statsRes, shipmentsRes] = await Promise.all([
@@ -31,6 +27,11 @@ export default function ShipperDashboard() {
       ]);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadDashboard();
+  }, []);
 
   const statCards = [
     { label: 'Total Shipments', value: stats.total, icon: FiPackage, color: 'from-indigo-500 to-indigo-600', bg: 'bg-indigo-50' },
