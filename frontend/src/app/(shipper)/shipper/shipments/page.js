@@ -5,11 +5,10 @@ import Link from 'next/link';
 import { shipmentAPI } from '@/lib/api';
 
 export default function ShipmentsPage() {
+  const [mounted, setMounted] = useState(false);
   const [shipments, setShipments] = useState([]);
   const [filter, setFilter] = useState('');
   const [search, setSearch] = useState('');
-
-  useEffect(() => { loadShipments(); }, [filter]);
 
   const loadShipments = async () => {
     try {
@@ -25,6 +24,13 @@ export default function ShipmentsPage() {
       ]);
     }
   };
+
+  useEffect(() => { 
+    setMounted(true);
+    loadShipments(); 
+  }, [filter]);
+
+  if (!mounted) return null;
 
   const statuses = ['', 'pending', 'assigned', 'in_transit', 'delivered', 'cancelled'];
 

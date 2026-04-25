@@ -14,6 +14,10 @@ export default function TrackingMap({ driverPosition, pickup, drop }) {
     const initMap = async () => {
       const L = (await import('leaflet')).default;
 
+      // Ensure the container is clean
+      if (mapRef.current && mapRef.current._leaflet_id) return;
+      if (mapInstance.current) return;
+
       // Fix Leaflet default icon
       delete L.Icon.Default.prototype._getIconUrl;
       L.Icon.Default.mergeOptions({

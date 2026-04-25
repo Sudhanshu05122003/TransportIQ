@@ -1,6 +1,15 @@
 'use client';
-import { FiSettings } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
+import { FiUser, FiMail, FiPhone, FiBriefcase, FiCheckCircle, FiSettings } from 'react-icons/fi';
+
 export default function SettingsPage() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-gray-900">Settings</h1>

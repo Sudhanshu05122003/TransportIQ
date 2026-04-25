@@ -1,7 +1,7 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { FiMapPin, FiPackage, FiTruck, FiDollarSign, FiArrowRight, FiInfo } from 'react-icons/fi';
+import { FiMapPin, FiPackage, FiTruck, FiDollarSign, FiArrowRight, FiInfo, FiUser, FiPhone } from 'react-icons/fi';
 import { shipmentAPI } from '@/lib/api';
 import toast from 'react-hot-toast';
 
@@ -18,8 +18,13 @@ const materialTypes = ['General Goods', 'Electronics', 'Furniture', 'Food & Peri
 
 export default function BookShipmentPage() {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   const [estimate, setEstimate] = useState(null);
   const [form, setForm] = useState({
     pickup_address: '', pickup_city: '', pickup_state: '', pickup_pincode: '',
@@ -61,6 +66,8 @@ export default function BookShipmentPage() {
       toast.error(err.message || 'Failed to book shipment');
     } finally { setLoading(false); }
   };
+
+  if (!mounted) return null;
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">

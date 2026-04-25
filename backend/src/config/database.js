@@ -29,7 +29,7 @@ async function initDatabase() {
     await sequelize.authenticate();
     
     // Ensure PostGIS extension is enabled
-    await sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis;');
+    // await sequelize.query('CREATE EXTENSION IF NOT EXISTS postgis;');
     
     // Sync models in development (use migrations in production)
 
