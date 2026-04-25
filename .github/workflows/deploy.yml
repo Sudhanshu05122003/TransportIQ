@@ -1,0 +1,67 @@
+name: TransportIQ CI/CD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+
+      - name: Install Backend Dependencies
+        run: cd backend && npm ci
+
+      - name: Install Frontend Dependencies
+        run: cd frontend && npm ci
+
+      - name: Lint Frontend
+        run: cd frontend && npm run lint
+
+      - name: Build Frontend
+        run: cd frontend && npm run build
+
+  build-and-push:
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Backend Docker Image
+        run: docker build -t transportiq-api:latest ./backend
+
+      - name: Build Frontend Docker Image
+        run: docker build -t transportiq-web:latest ./frontend
+
+      # Add your registry push steps here (ECR, Docker Hub, etc.)
+      # - name: Push to ECR
+      #   run: |
+      #     aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin $ECR_REGISTRY
+      #     docker tag transportiq-api:latest $ECR_REGISTRY/transportiq-api:latest
+      #     docker push $ECR_REGISTRY/transportiq-api:latest
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Deploy to Production
+        run: echo "Add your deployment commands here (SSH to EC2, kubectl apply, etc.)"
