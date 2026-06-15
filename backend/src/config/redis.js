@@ -42,6 +42,8 @@ function createMockRedisClient() {
     del: async (key) => { store.delete(key); return 1; },
     exists: async (key) => store.has(key) ? 1 : 0,
     expire: async () => 1,
+    pExpire: async () => 1,
+    pTTL: async () => 60000,
     incr: async (key) => {
       const val = parseInt(store.get(key) || '0') + 1;
       store.set(key, String(val));

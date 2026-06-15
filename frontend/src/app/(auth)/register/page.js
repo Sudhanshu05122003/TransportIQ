@@ -32,7 +32,8 @@ function RegisterForm() {
       const routes = { shipper: '/shipper/dashboard', transporter: '/transporter/dashboard', driver: '/driver/dashboard' };
       router.push(routes[user.role] || '/');
     } catch (error) {
-      toast.error(error.message || 'Registration failed');
+      const errMsg = error.errors?.map(e => e.message).join(', ') || error.message || 'Registration failed';
+      toast.error(errMsg);
     } finally { setLoading(false); }
   };
 
@@ -62,7 +63,7 @@ function RegisterForm() {
               <p className="text-sm font-medium text-gray-700 mb-3">I am a...</p>
               <div className="grid gap-3">
                 {roles.map(r => (
-                  <button key={r.key} type="button" onClick={() => { setForm({...form, role: r.key}); setStep(2); }}
+                  <button key={r.key} type="button" onClick={() => { setForm({...form, role: r.key}); setStep(2); }} suppressHydrationWarning
                     className={`flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left ${form.role===r.key?'border-indigo-500 bg-indigo-50':'border-gray-200 hover:border-indigo-300'}`}>
                     <span className="text-3xl">{r.icon}</span>
                     <div><div className="font-semibold text-gray-900">{r.label}</div><div className="text-sm text-gray-500">{r.desc}</div></div>
@@ -77,11 +78,11 @@ function RegisterForm() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-semibold text-gray-700 mb-1.5 block">First Name</label>
-                  <input value={form.first_name} onChange={e=>setForm({...form,first_name:e.target.value})} className="input-field" placeholder="e.g. Rajesh" required />
+                  <input value={form.first_name} onChange={e=>setForm({...form,first_name:e.target.value})} className="input-field" placeholder="e.g. Rajesh" required suppressHydrationWarning />
                 </div>
                 <div>
                   <label className="text-sm font-semibold text-gray-700 mb-1.5 block">Last Name</label>
-                  <input value={form.last_name} onChange={e=>setForm({...form,last_name:e.target.value})} className="input-field" placeholder="e.g. Kumar" />
+                  <input value={form.last_name} onChange={e=>setForm({...form,last_name:e.target.value})} className="input-field" placeholder="e.g. Kumar" suppressHydrationWarning />
                 </div>
               </div>
 
@@ -91,7 +92,7 @@ function RegisterForm() {
                   <div className="absolute left-0 top-0 bottom-0 flex items-center justify-center w-12 pointer-events-none border-r border-gray-200">
                     <FiPhone className="text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
                   </div>
-                  <input type="tel" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} className="input-field" style={{ paddingLeft: '4rem' }} placeholder="+91 98765 43210" required />
+                  <input type="tel" value={form.phone} onChange={e=>setForm({...form,phone:e.target.value})} className="input-field" style={{ paddingLeft: '4rem' }} placeholder="+91 98765 43210" required suppressHydrationWarning />
                 </div>
               </div>
 
@@ -101,7 +102,7 @@ function RegisterForm() {
                   <div className="absolute left-0 top-0 bottom-0 flex items-center justify-center w-12 pointer-events-none border-r border-gray-200">
                     <FiMail className="text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
                   </div>
-                  <input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} className="input-field" style={{ paddingLeft: '4rem' }} placeholder="you@example.com" />
+                  <input type="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} className="input-field" style={{ paddingLeft: '4rem' }} placeholder="you@example.com" suppressHydrationWarning />
                 </div>
               </div>
 
@@ -111,8 +112,9 @@ function RegisterForm() {
                   <div className="absolute left-0 top-0 bottom-0 flex items-center justify-center w-12 pointer-events-none border-r border-gray-200">
                     <FiLock className="text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
                   </div>
-                  <input type="password" value={form.password} onChange={e=>setForm({...form,password:e.target.value})} className="input-field" style={{ paddingLeft: '4rem' }} placeholder="Minimum 8 characters" required />
+                  <input type="password" value={form.password} onChange={e=>setForm({...form,password:e.target.value})} className="input-field" style={{ paddingLeft: '4rem' }} placeholder="Enter password" required suppressHydrationWarning />
                 </div>
+                <p className="text-xs text-gray-500 mt-1.5">Must be at least 8 characters and include uppercase, lowercase, and a number.</p>
               </div>
 
               {(form.role === 'shipper' || form.role === 'transporter') && (
@@ -122,14 +124,14 @@ function RegisterForm() {
                     <div className="absolute left-0 top-0 bottom-0 flex items-center justify-center w-12 pointer-events-none border-r border-gray-200">
                       <FiBriefcase className="text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
                     </div>
-                    <input value={form.company_name} onChange={e=>setForm({...form,company_name:e.target.value})} className="input-field" style={{ paddingLeft: '4rem' }} placeholder="Your Company Pvt. Ltd." />
+                    <input value={form.company_name} onChange={e=>setForm({...form,company_name:e.target.value})} className="input-field" style={{ paddingLeft: '4rem' }} placeholder="Your Company Pvt. Ltd." suppressHydrationWarning />
                   </div>
                 </div>
               )}
 
               <div className="flex gap-4 pt-4">
-                <button type="button" onClick={()=>setStep(1)} className="btn-secondary flex-1 py-3.5">Back</button>
-                <button type="submit" disabled={loading} className="btn-primary flex-1 flex items-center justify-center gap-2 py-3.5 disabled:opacity-60">
+                <button type="button" onClick={()=>setStep(1)} suppressHydrationWarning className="btn-secondary flex-1 py-3.5">Back</button>
+                <button type="submit" disabled={loading} suppressHydrationWarning className="btn-primary flex-1 flex items-center justify-center gap-2 py-3.5 disabled:opacity-60">
                   {loading ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <>Create Account <FiArrowRight /></>}
                 </button>
               </div>

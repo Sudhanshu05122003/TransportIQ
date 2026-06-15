@@ -19,10 +19,10 @@ const rateLimiter = (options) => {
       const current = await redis.incr(key);
       
       if (current === 1) {
-        await redis.pexpire(key, windowMs);
+        await redis.pExpire(key, windowMs);
       }
 
-      const ttl = await redis.pttl(key);
+      const ttl = await redis.pTTL(key);
       
       res.setHeader('X-RateLimit-Limit', max);
       res.setHeader('X-RateLimit-Remaining', Math.max(0, max - current));

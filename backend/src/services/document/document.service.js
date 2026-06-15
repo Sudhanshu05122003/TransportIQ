@@ -8,13 +8,35 @@ class DocumentService {
     const shipment = await Shipment.findByPk(data.shipment_id);
     if (!shipment) throw new Error('Shipment not found');
 
+    // Perform OCR if KYC document
+    let metadata = data.metadata || {};
+    if (data.document_type === 'kyc') {
+      const extractedData = await this.performOCR(data.file_url);
+      metadata = { ...metadata, extractedData };
+    }
+
     const document = await ShipmentDocument.create({
       ...data,
+      metadata,
       uploaded_by: userId,
       is_verified: false
     });
 
     return document;
+  }
+
+  /**
+   * Mock Document OCR for Automated KYC
+   */
+  async performOCR(fileUrl) {
+    console.log(`[OCR] Parsing document at ${fileUrl}`);
+    // In production, integrate Google Cloud Vision or Tesseract here.
+    return {
+      parsed_name: 'JOHN DOE',
+      parsed_id_number: 'IND' + Math.floor(Math.random() * 1000000),
+      parsed_dob: '1985-05-12',
+      confidence_score: 0.94
+    };
   }
 
   /**

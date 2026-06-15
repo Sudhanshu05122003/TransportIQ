@@ -74,6 +74,7 @@ const Shipment = sequelize.define('Shipment', {
   pod_image_url: DataTypes.TEXT,
   pod_signature_url: DataTypes.TEXT,
   actual_delivery_at: DataTypes.DATE,
+  is_arriving_soon_alert_sent: { type: DataTypes.BOOLEAN, defaultValue: false },
 
   // Pricing
   distance_km: DataTypes.DECIMAL(10, 2),

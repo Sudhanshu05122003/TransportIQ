@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
-import { FiTruck, FiPhone, FiLock, FiEye, FiEyeOff, FiArrowRight } from 'react-icons/fi';
+import { FiTruck, FiPhone, FiLock, FiEye, FiEyeOff, FiArrowRight, FiUser } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
 export default function LoginPage() {
@@ -13,18 +13,24 @@ export default function LoginPage() {
   const [tab, setTab] = useState('password');
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ phone: '', password: '', otp: '' });
+  const [form, setForm] = useState({ phone: '', password: '', otp: '', role: 'shipper' });
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
       const user = await login({ phone: form.phone, password: form.password });
+      if (user.role !== 'admin' && user.role !== form.role) {
+        toast.error(`Role mismatch: This account is registered as a ${user.role}.`);
+        setLoading(false);
+        return;
+      }
       toast.success(`Welcome back, ${user.first_name}!`);
       const routes = { shipper: '/shipper/dashboard', transporter: '/transporter/dashboard', driver: '/driver/dashboard', admin: '/admin/dashboard' };
       router.push(routes[user.role] || '/');
     } catch (error) {
-      toast.error(error.message || 'Login failed');
+      const errMsg = error.errors?.map(e => e.message).join(', ') || error.message || 'Login failed';
+      toast.error(errMsg);
     } finally { setLoading(false); }
   };
 
@@ -50,10 +56,31 @@ export default function LoginPage() {
           <p className="text-gray-500 mb-8">Enter your credentials to access your account</p>
           <div className="flex bg-gray-100 rounded-xl p-1 mb-8">
             {['password','otp'].map(t=>(
-              <button key={t} onClick={()=>setTab(t)} className={`flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all ${tab===t?'bg-white text-indigo-600 shadow-sm':'text-gray-500'}`}>{t==='password'?'Password':'OTP Login'}</button>
+              <button key={t} onClick={()=>setTab(t)} suppressHydrationWarning className={`flex-1 py-2.5 rounded-lg text-sm font-semibold transition-all ${tab===t?'bg-white text-indigo-600 shadow-sm':'text-gray-500'}`}>{t==='password'?'Password':'OTP Login'}</button>
             ))}
           </div>
           <form onSubmit={handleLogin} className="space-y-6">
+            <div>
+              <label className="text-sm font-semibold text-gray-700 mb-1.5 block">Select Your Role</label>
+              <div className="relative group">
+                <div className="absolute left-0 top-0 bottom-0 flex items-center justify-center w-12 pointer-events-none border-r border-gray-200">
+                  <FiUser className="text-gray-400 group-focus-within:text-indigo-500 transition-colors" />
+                </div>
+                <select
+                  value={form.role}
+                  onChange={(e) => setForm({ ...form, role: e.target.value })}
+                  className="input-field bg-white appearance-none cursor-pointer"
+                  style={{ paddingLeft: '4rem' }}
+                  suppressHydrationWarning
+                >
+                  <option value="shipper">Shipper (Book Cargo)</option>
+                  <option value="transporter">Transporter (Fleet Owner)</option>
+                  <option value="driver">Driver (Accept & Drive)</option>
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-400 w-0 h-0" />
+              </div>
+            </div>
+
             <div>
               <label className="text-sm font-semibold text-gray-700 mb-1.5 block">Phone Number</label>
               <div className="relative group">
@@ -68,6 +95,7 @@ export default function LoginPage() {
                   style={{ paddingLeft: '4rem' }}
                   placeholder="+91 98765 43210" 
                   required 
+                  suppressHydrationWarning
                 />
               </div>
             </div>
@@ -89,11 +117,13 @@ export default function LoginPage() {
                     style={{ paddingLeft: '4rem', paddingRight: '3rem' }}
                     placeholder="Enter your password" 
                     required 
+                    suppressHydrationWarning
                   />
                   <button 
                     type="button" 
                     onClick={()=>setShowPw(!showPw)} 
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    suppressHydrationWarning
                   >
                     {showPw ? <FiEyeOff size={18} /> : <FiEye size={18} />}
                   </button>
@@ -110,14 +140,15 @@ export default function LoginPage() {
                   onChange={e=>setForm({...form,otp:e.target.value})} 
                   className="input-field text-center tracking-[0.8em] text-xl font-bold" 
                   placeholder="••••••" 
+                  suppressHydrationWarning
                 />
                 <div className="flex justify-between items-center mt-3">
                   <span className="text-xs text-gray-500">Didn&apos;t receive it?</span>
-                  <button type="button" className="text-indigo-600 text-sm font-semibold hover:underline">Resend OTP</button>
+                  <button type="button" suppressHydrationWarning className="text-indigo-600 text-sm font-semibold hover:underline">Resend OTP</button>
                 </div>
               </div>
             )}
-            <button type="submit" disabled={loading} className="btn-primary w-full py-4 flex items-center justify-center gap-2 disabled:opacity-60 shadow-lg shadow-indigo-200 mt-2">
+            <button type="submit" disabled={loading} suppressHydrationWarning className="btn-primary w-full py-4 flex items-center justify-center gap-2 disabled:opacity-60 shadow-lg shadow-indigo-200 mt-2">
               {loading?<div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"/>:<>Sign In to Account <FiArrowRight/></>}
             </button>
           </form>

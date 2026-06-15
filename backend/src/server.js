@@ -123,33 +123,45 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 5000;
 
 async function startServer() {
+  // Initialize database (non-fatal in dev)
   try {
-    // Initialize database
     await initDatabase();
     console.log('✅ PostgreSQL connected');
+  } catch (error) {
+    console.warn('⚠️  PostgreSQL connection failed, running in degraded mode:', error.message);
+    console.warn('   API endpoints requiring database will return errors.');
+  }
 
-    // Initialize Redis
+  // Initialize Redis (non-fatal — has mock fallback)
+  try {
     await initRedis();
     console.log('✅ Redis connected');
+  } catch (error) {
+    console.warn('⚠️  Redis connection failed, using in-memory fallback:', error.message);
+  }
 
-    // Initialize Kafka
+  // Initialize Kafka (non-fatal — optional in dev)
+  try {
     await initKafka();
     await startEventConsumers();
-
-    // Initialize Socket.IO
-    initSocket(server);
-
-    console.log('✅ Socket.IO initialized');
-
-    server.listen(PORT, () => {
-      console.log(`\n🚀 TransportIQ API running on port ${PORT}`);
-      console.log(`📡 Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`🔗 Health check: http://localhost:${PORT}/api/health\n`);
-    });
+    console.log('✅ Kafka connected');
   } catch (error) {
-    console.error('❌ Failed to start server:', error);
-    process.exit(1);
+    console.warn('⚠️  Kafka connection failed, event streaming disabled:', error.message);
   }
+
+  // Initialize Socket.IO (always works — no external dependency)
+  try {
+    initSocket(server);
+    console.log('✅ Socket.IO initialized');
+  } catch (error) {
+    console.warn('⚠️  Socket.IO initialization failed:', error.message);
+  }
+
+  server.listen(PORT, () => {
+    console.log(`\n🚀 TransportIQ API running on port ${PORT}`);
+    console.log(`📡 Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`🔗 Health check: http://localhost:${PORT}/api/health\n`);
+  });
 }
 
 startServer();

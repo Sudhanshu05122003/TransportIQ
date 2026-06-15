@@ -1,6 +1,25 @@
 const { getRedis } = require('../../config/redis');
 const { produceEvent } = require('../../config/kafka');
 const OpsService = require('../ops/ops.service');
+const { Shipment } = require('../../models');
+const NotificationService = require('../notification/notification.service');
+
+// Haversine distance utility function
+function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2-lat1);
+  var dLon = deg2rad(lon2-lon1); 
+  var a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2); 
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  return R * c;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180);
+}
 
 /**
  * Enterprise Tracking Service
@@ -42,6 +61,30 @@ class TrackingService {
         driverId,
         ...point
       });
+    }
+
+    // 4. Geofencing check for Arriving Soon alert
+    const activeShipment = await Shipment.findOne({
+      where: { driver_id: driverId, status: 'in_transit' }
+    });
+
+    if (activeShipment && !activeShipment.is_arriving_soon_alert_sent) {
+      const distance = getDistanceFromLatLonInKm(
+        lastPoint.lat, lastPoint.lng,
+        activeShipment.drop_lat, activeShipment.drop_lng
+      );
+      
+      if (distance <= 5.0) { // within 5km
+        await NotificationService.notify(
+          activeShipment.shipper_id,
+          'shipment_arriving',
+          'Shipment Arriving Soon',
+          `Your shipment ${activeShipment.tracking_id} is less than 5km away from the drop location!`,
+          { shipment_id: activeShipment.id, tracking_id: activeShipment.tracking_id }
+        );
+        activeShipment.is_arriving_soon_alert_sent = true;
+        await activeShipment.save();
+      }
     }
 
     return { synced_count: sortedPoints.length, last_sync: new Date() };

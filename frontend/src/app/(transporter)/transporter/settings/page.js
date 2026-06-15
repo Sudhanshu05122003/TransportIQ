@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { authAPI } from '@/lib/api';
-import { FiUser, FiMail, FiPhone, FiBriefcase, FiCheckCircle, FiSettings } from 'react-icons/fi';
+import { FiUser, FiMail, FiPhone, FiBriefcase, FiCheckCircle } from 'react-icons/fi';
 import toast from 'react-hot-toast';
 
 export default function SettingsPage() {
@@ -21,7 +21,6 @@ export default function SettingsPage() {
     setMounted(true);
   }, []);
 
-  // Sync state when user profile is loaded
   useEffect(() => {
     if (user) {
       setForm({
@@ -40,8 +39,8 @@ export default function SettingsPage() {
     try {
       const response = await authAPI.updateProfile(form);
       if (response.success) {
-        setUser(response.data); // Update global AuthContext state
-        toast.success('Profile updated successfully!');
+        setUser(response.data);
+        toast.success('Transporter profile updated successfully!');
       } else {
         toast.error(response.message || 'Failed to update profile');
       }
@@ -60,7 +59,7 @@ export default function SettingsPage() {
       <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
       
       <form onSubmit={handleSubmit} className="card p-8 bg-white shadow-sm">
-        <h2 className="text-xl font-bold text-gray-900 mb-6">Profile Settings</h2>
+        <h2 className="text-xl font-bold text-gray-900 mb-6">Profile Settings (Transporter Portal)</h2>
         
         <div className="grid sm:grid-cols-2 gap-6">
           <div>

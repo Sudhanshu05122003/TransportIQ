@@ -36,6 +36,10 @@ class NotificationService {
         await this.sendPush(userId, title, message, data);
       }
 
+      if (process.env.ENABLE_WHATSAPP === 'true') {
+        await this.sendWhatsApp(userId, message);
+      }
+
       return notification;
     } catch (error) {
       console.error('Failed to send notification:', error);
@@ -90,6 +94,20 @@ class NotificationService {
   async sendPush(userId, title, message, data) {
     console.log(`[PUSH] Sending to User ${userId}: ${title} - ${message}`);
     // Integration with Firebase Cloud Messaging (FCM) would go here
+  }
+
+  // Placeholder for WhatsApp Integration
+  async sendWhatsApp(userId, message) {
+    // We would fetch the user's phone number here
+    // const user = await User.findByPk(userId);
+    // const phoneNumber = user.phone_number;
+    console.log(`[WHATSAPP] Sending to User ${userId}: ${message}`);
+    // Example Twilio integration logic:
+    // client.messages.create({
+    //   body: message,
+    //   from: 'whatsapp:+14155238886',
+    //   to: `whatsapp:${phoneNumber}`
+    // })
   }
 }
 

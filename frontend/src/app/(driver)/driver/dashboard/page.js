@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { FiDollarSign, FiTruck, FiMapPin, FiToggleLeft, FiToggleRight, FiCheckCircle, FiNavigation } from 'react-icons/fi';
+import { FiTruck, FiMapPin, FiToggleLeft, FiToggleRight, FiCheckCircle, FiNavigation } from 'react-icons/fi';
 
 export default function DriverDashboard() {
   const [isOnline, setIsOnline] = useState(true);
@@ -32,12 +32,12 @@ export default function DriverDashboard() {
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4">
         <div className="card-stat text-center">
-          <FiDollarSign className="mx-auto text-2xl text-emerald-500 mb-2" />
+          <span className="mx-auto text-2xl font-bold text-emerald-500 mb-2 block">₹</span>
           <div className="text-2xl font-bold text-gray-900">₹{todayEarnings.toLocaleString()}</div>
           <div className="text-xs text-gray-500">Today</div>
         </div>
         <div className="card-stat text-center">
-          <FiDollarSign className="mx-auto text-2xl text-indigo-500 mb-2" />
+          <span className="mx-auto text-2xl font-bold text-indigo-500 mb-2 block">₹</span>
           <div className="text-2xl font-bold text-gray-900">₹{weekEarnings.toLocaleString()}</div>
           <div className="text-xs text-gray-500">This Week</div>
         </div>

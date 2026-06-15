@@ -12,9 +12,9 @@ export default function DashboardLayout({ children, navItems, roleLabel }) {
   const [mounted, setMounted] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  
+
   // Note: For a real app, unread count would come from a global state or API
-  const unreadCount = 2; 
+  const unreadCount = 2;
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -60,12 +60,12 @@ export default function DashboardLayout({ children, navItems, roleLabel }) {
               <FiMenu className="text-xl" />
             </button>
             <div className="flex items-center gap-3">
-              <Link 
-                href="/shipper/notifications"
+              <Link
+                href={`/${user?.role || 'shipper'}/notifications`}
                 className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors group"
                 onClick={() => setProfileOpen(false)}
               >
-                <FiBell className={`text-xl ${pathname === '/shipper/notifications' ? 'text-indigo-600' : 'text-gray-600'} group-hover:text-indigo-600 transition-colors`} />
+                <FiBell className={`text-xl ${pathname === `/${user?.role || 'shipper'}/notifications` ? 'text-indigo-600' : 'text-gray-600'} group-hover:text-indigo-600 transition-colors`} />
                 {unreadCount > 0 && (
                   <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white">
                     {unreadCount}
@@ -73,8 +73,8 @@ export default function DashboardLayout({ children, navItems, roleLabel }) {
                 )}
               </Link>
               <div className="relative">
-                <button 
-                  onClick={() => setProfileOpen(!profileOpen)} 
+                <button
+                  onClick={() => setProfileOpen(!profileOpen)}
                   className="flex items-center gap-2 p-2 rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <div className="w-8 h-8 rounded-full gradient-primary flex items-center justify-center text-white text-sm font-bold">

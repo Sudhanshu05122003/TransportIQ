@@ -4,6 +4,7 @@ import { FiHome, FiTruck, FiUsers, FiPackage, FiDollarSign, FiSettings } from 'r
 
 const navItems = [
   { href: '/transporter/dashboard', label: 'Dashboard', icon: FiHome },
+  { href: '/transporter/load-board', label: 'Load Board', icon: FiPackage },
   { href: '/transporter/fleet', label: 'Fleet', icon: FiTruck },
   { href: '/transporter/drivers', label: 'Drivers', icon: FiUsers },
   { href: '/transporter/shipments', label: 'Shipments', icon: FiPackage },

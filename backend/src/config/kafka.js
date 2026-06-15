@@ -3,9 +3,11 @@ const { Kafka } = require('kafkajs');
 const kafka = new Kafka({
   clientId: 'transportiq-app',
   brokers: [process.env.KAFKA_BROKER || 'localhost:9092'],
+  connectionTimeout: 3000,
+  requestTimeout: 5000,
   retry: {
     initialRetryTime: 100,
-    retries: 8
+    retries: 2
   }
 });
 
