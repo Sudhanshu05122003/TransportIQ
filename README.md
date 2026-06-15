@@ -4,27 +4,39 @@ A production-ready, real-time transportation, logistics, and supply chain manage
 
 ## 🎯 Overview
 
-TransportIQ connects **Shippers**, **Transporters**, **Drivers**, and **Admins** in a unified ecosystem for freight movement across India.
+TransportIQ connects **Shippers**, **Transporters**, **Drivers**, and **Admins** in a unified, role-based ecosystem for freight movement across India.
 
 ### Key Features
-- **Shipment Booking** with map-based locations, vehicle selection, and dynamic pricing
-- **Live GPS Tracking** with 3-5 second updates via Socket.IO
-- **Driver Auto-Matching** using geolocation and vehicle type
-- **Razorpay Payments** (UPI, Cards, Wallets, COD)
-- **GST-Compliant Invoicing** with CGST/SGST/IGST support
-- **Fleet Management** for transporters
-- **Analytics Dashboard** with Recharts visualizations
-- **AI-based ETA Prediction** using vehicle speed models
-- **Multi-stop Delivery** support
-- **OTP Authentication** (India-ready)
+* **Role-Based Portals**: Tailored interfaces for Shippers, Transporters, and Drivers.
+* **Shipment Booking**: Map-based locations, vehicle selection, and dynamic pricing rules.
+* **Live GPS Tracking**: Real-time driver tracking with route map visualization (powered by Leaflet.js).
+* **Driver Auto-Matching**: Automated matching logic based on driver availability, vehicle capacity, and location.
+* **Razorpay Integration**: Instantly create orders and verify payments for booking shipments.
+* **GST-Compliant Invoicing**: Automatically calculate CGST, SGST, or IGST depending on state coordinates.
+* **Full-Fidelity Driver App**:
+  * **Active Trip Tracker**: Interactive status steps (Arrive, Load, Transit, Deliver) with live route tracking.
+  * **Earnings Analyzer**: Recharts-based daily/weekly earnings graphs, wallet balance tracking, and cash-out requests.
+  * **History & Logs**: Detailed completed and cancelled shipment logs.
+  * **Profile & KYC**: Personal data fields (name, phone, license, Aadhaar) and verification badge trackers.
+  * **Settings Preferences**: Auto-accept matches, SMS/Push preferences, and sound warning alerts.
+* **Fleet Transporter Dashboard**:
+  * **Driver Registry**: Manage driver profiles, status states (Active/Idle/Offline), and add new drivers to the fleet.
+  * **Shipment Allocator**: Allocate vehicles and drivers dynamically to new bookings.
+  * **Earnings Charts**: Metric tracking for Monthly Revenue (MTD) and weekly breakdowns.
+  * **Settings Controls**: Update transporter profile and company registration records.
+* **Dynamic Role-Based Notifications**: Dynamic bell notification indicator that routes to customized notifications (e.g. system logs for Admin, load board quotes for Transporter, trip assignments/payouts for Driver).
+* **Robust Error Handling & Security**:
+  * Client-side validation with specific field-level server error alerts.
+  * Suppressed browser hydration warnings (autofill `fdprocessedid` mismatch resolved).
+  * Highly stable, camelCase Redis v4 Rate Limiter (`pTTL`/`pExpire`) with failsafe offline mock fallbacks.
 
 ## 🏗️ Tech Stack
 
 | Layer | Technology |
-|-------|-----------|
-| **Frontend** | Next.js 14 (App Router), Tailwind CSS, Recharts, Leaflet.js |
-| **Backend** | Node.js, Express.js, Socket.IO |
-| **Database** | PostgreSQL (PostGIS), Redis |
+|---|---|
+| **Frontend** | Next.js 14+ (App Router), Tailwind CSS, Recharts, Leaflet.js, React Icons |
+| **Backend** | Node.js, Express.js, Socket.IO, Sequelize ORM |
+| **Database** | PostgreSQL (PostGIS), Redis (v4 client) |
 | **Auth** | JWT + bcrypt + OTP |
 | **Payments** | Razorpay |
 | **Maps** | Leaflet.js / OpenStreetMap |
@@ -33,152 +45,107 @@ TransportIQ connects **Shippers**, **Transporters**, **Drivers**, and **Admins**
 ## 📁 Project Structure
 
 ```
-├── frontend/           # Next.js 14 + Tailwind CSS
+├── frontend/           # Next.js App Router + Tailwind CSS
 │   ├── src/app/        # App Router pages
-│   │   ├── (auth)/     # Login, Register
-│   │   ├── (shipper)/  # Shipper dashboard, booking, tracking
-│   │   ├── (transporter)/ # Fleet management
-│   │   ├── (driver)/   # Driver interface
-│   │   └── (admin)/    # Admin panel
-│   ├── src/components/ # Shared UI, maps, charts
-│   ├── src/lib/        # API client, socket, utils
-│   └── src/contexts/   # Auth context
+│   │   ├── (auth)/     # Hydration-safe Login (with Role Selection), Register (with helper requirements)
+│   │   ├── (shipper)/  # Shipper booking, settings, tracking, and shipments
+│   │   ├── (transporter)/ # Fleet, loads, drivers registry, earnings, settings, notifications
+│   │   ├── (driver)/   # Active trip, earnings tracking, trip history, profile/KYC, settings, notifications
+│   │   └── (admin)/    # Admin panel dashboards, user database controls, notifications
+│   ├── src/components/ # Shared dashboard layouts, Leaflet map utilities, analytical charts
+│   ├── src/lib/        # API clients, interceptors, Socket.IO events
+│   └── src/contexts/   # Global Auth status and context
 │
-├── backend/            # Express.js modular API
-│   ├── src/services/   # Auth, Shipment, Tracking, Payment, Fleet, Driver, Pricing, Admin
-│   ├── src/models/     # Sequelize ORM models
-│   ├── src/middleware/  # Auth, RBAC, validation, rate limiting
-│   └── src/utils/      # Distance, pricing, matching, ETA
+├── backend/            # Express.js Modular REST & Gateway API
+│   ├── src/services/   # Auth controllers, shipment, fleet, driver, payments, pricing, and system alerts
+│   ├── src/models/     # Sequelize ORM models (PostGIS/PostgreSQL schema definitions)
+│   ├── src/middleware/  # Dynamic role verification, rate limiting (Redis v4), error parsing
+│   └── src/utils/      # Fare calculators, ETA prediction models, matching heuristics
 │
 ├── database/           # PostgreSQL schema (PostGIS)
-├── docker-compose.yml  # Full stack containers
+├── docker-compose.yml  # Multi-container local orchestration (Postgres, Redis, Kafka, Zookeeper)
 └── .github/workflows/  # CI/CD pipeline
 ```
 
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+
-- PostgreSQL 15+ (or Docker)
-- Redis (or Docker)
+* Node.js 18+
+* PostgreSQL 15+ (with PostGIS extension enabled)
+* Redis Server 7+
 
 ### 1. Clone & Install
-
 ```bash
 git clone <repo-url>
 cd TransportIQ
 
-# Install all dependencies
+# Install all workspace dependencies (root, backend, frontend)
 npm run install:all
 ```
 
 ### 2. Environment Setup
-
+Create a `.env` file in the root directory (and `backend/.env`):
 ```bash
 cp .env.example .env
-# Edit .env with your database credentials, JWT secrets, etc.
+# Open and configure database credentials, JWT secrets, and payment API keys
 ```
 
 ### 3. Database Setup
-
-**Option A: Docker (Recommended)**
+**Option A: Docker Orchestration (Recommended)**
 ```bash
 docker-compose up -d postgres redis
 ```
-
-**Option B: Manual**
+**Option B: Manual Setup**
 ```bash
 psql -U postgres -c "CREATE DATABASE transportiq;"
 psql -U postgres -d transportiq -f database/schema.sql
 ```
 
 ### 4. Start Development
-
+To launch both frontend and backend development servers concurrently:
 ```bash
-# Start both frontend and backend
 npm run dev
-
-# Or individually
-npm run dev:backend    # http://localhost:5000
-npm run dev:frontend   # http://localhost:3000
 ```
+* **Frontend Dev Server**: [http://localhost:3000](http://localhost:3000)
+* **Backend API Gateway**: [http://localhost:5000](http://localhost:5000) (Health check: `http://localhost:5000/api/health`)
 
-### 5. Default Admin Login
-- **Phone:** 9999999999
-- **Password:** Admin@123
+---
+
+### 5. Default Verification Credentials
+
+For testing and verification, you can log in with:
+* **Admin Phone:** `9999999999` | **Password:** `Admin@123`
+* **Demo Driver Phone:** `9723133850` | **Password:** `Rajesh@123` (requires uppercase, lowercase, and numeric characters)
 
 ## 🐳 Docker Deployment
-
+To build and run all services in production/containers:
 ```bash
 # Build and start all services
 docker-compose up -d
 
-# View logs
+# View real-time container output logs
 docker-compose logs -f
 ```
 
 ## 📡 API Endpoints
 
-### Auth
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | Login with phone/password |
-| POST | `/api/auth/otp/request` | Request OTP |
-| POST | `/api/auth/otp/verify` | Verify OTP & login |
-| GET | `/api/auth/profile` | Get profile |
+### Authentication
+* `POST /api/auth/register` - Create account (validates phone, password complexity, and role).
+* `POST /api/auth/login` - Verify credentials and return JWT tokens.
+* `POST /api/auth/otp/request` - Generate and send verification OTP.
+* `POST /api/auth/otp/verify` - Confirm OTP code.
+* `PUT /api/auth/profile` - Update profile details (editable name, email, company, GSTIN).
 
-### Shipments
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/shipments` | Create shipment |
-| POST | `/api/shipments/estimate` | Get fare estimate |
-| GET | `/api/shipments` | List shipments |
-| GET | `/api/shipments/:id` | Get shipment details |
-| PATCH | `/api/shipments/:id/status` | Update status |
-| POST | `/api/shipments/:id/auto-assign` | Auto-assign driver |
+### Shipments & Allocation
+* `POST /api/shipments` - Create shipment booking.
+* `POST /api/shipments/estimate` - Fare estimations based on routing rules.
+* `PATCH /api/shipments/:id/status` - Transition shipment/trip states.
 
-### Tracking
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/tracking/trip/:id/location` | Record GPS point |
-| GET | `/api/tracking/trip/:id/locations` | Get location history |
-| GET | `/api/tracking/trip/:id/position` | Get live position |
-
-### Payments
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/payments/create-order` | Create Razorpay order |
-| POST | `/api/payments/:id/verify` | Verify payment |
-
-### Fleet, Driver, Pricing, Admin
-See full API documentation in the codebase.
-
-## 🔧 Configuration
-
-All configuration is via environment variables. See `.env.example` for the full list.
-
-## 📊 Database Schema
-
-- **users** — All roles with KYC, geolocation
-- **vehicles** — Registration, documents, capacity
-- **shipments** — Full lifecycle with multi-stop
-- **trips** — Active tracking with route polylines
-- **locations** — GPS history (PostGIS indexed)
-- **payments** — Razorpay + GST breakdown
-- **invoices** — GST-compliant invoices
-- **pricing_rules** — Dynamic pricing per vehicle type
-- **notifications** — In-app + push ready
-
-## 🇮🇳 India-Specific Compliance
-
-- GST invoice generation (CGST/SGST/IGST)
-- E-way bill structure ready
-- Driver KYC (Aadhaar, Driving License)
-- Multi-language support (future-ready)
-- Indian phone number validation
-- INR currency throughout
+## 🇮🇳 India-Specific Features
+* **GST Compliance**: Instantly generates IGST, CGST, and SGST breakdowns.
+* **Indian Phone Validation**: Standard regex checks for `+91` ten-digit mobile numbers.
+* **Driver Verification**: Track license registration and Aadhaar numbers.
+* **INR Currency Support**: Full UI localization displaying `₹` symbols.
 
 ## License
-
-MIT
+Licensed under the [MIT License](LICENSE).
