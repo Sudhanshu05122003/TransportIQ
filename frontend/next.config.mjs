@@ -10,7 +10,7 @@ const nextConfig = {
     root: __dirname,
   },
   devIndicators: false,
-  output: 'standalone',
+//  output: 'standalone',
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: '**.openstreetmap.org' },
