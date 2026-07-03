@@ -9,10 +9,6 @@ export default function LoadBoardPage() {
   const [biddingOn, setBiddingOn] = useState(null);
   const [bidAmount, setBidAmount] = useState('');
 
-  useEffect(() => {
-    fetchLoads();
-  }, []);
-
   const fetchLoads = async () => {
     try {
       // Mock fetch
@@ -46,6 +42,11 @@ export default function LoadBoardPage() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    fetchLoads();
+  }, []);
 
   const submitBid = async (shipmentId) => {
     if (!bidAmount) {

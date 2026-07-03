@@ -13,6 +13,7 @@ export default function SettingsPage() {
   const [passwords, setPasswords] = useState({ current: '', new: '', confirm: '' });
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
