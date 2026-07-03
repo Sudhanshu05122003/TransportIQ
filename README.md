@@ -7,24 +7,23 @@ A production-ready, real-time transportation, logistics, and supply chain manage
 TransportIQ connects **Shippers**, **Transporters**, **Drivers**, and **Admins** in a unified, role-based ecosystem for freight movement across India.
 
 ### Key Features
-* **Role-Based Portals**: Tailored interfaces for Shippers, Transporters, and Drivers.
-* **Shipment Booking**: Map-based locations, vehicle selection, and dynamic pricing rules.
-* **Live GPS Tracking**: Real-time driver tracking with route map visualization (powered by Leaflet.js).
-* **Driver Auto-Matching**: Automated matching logic based on driver availability, vehicle capacity, and location.
-* **Razorpay Integration**: Instantly create orders and verify payments for booking shipments.
-* **GST-Compliant Invoicing**: Automatically calculate CGST, SGST, or IGST depending on state coordinates.
+* **Role-Based Portals**: Tailored interfaces for Shippers, Transporters, Drivers, and Admins.
+* **Interactive Shipper Portal**:
+  * **Shipment Booking**: Map-based pickup/drop locations, vehicle selection, and dynamic pricing rules.
+  * **Live GPS Tracking**: Real-time driver tracking with route map visualization (powered by Leaflet.js).
+  * **Notifications Tray**: Dynamic bell notification indicator showing unread counts and quick navigation.
+* **Transporter Marketplace (Load Board)**:
+  * **Bidding Engine**: Transporters can place bids and quotes dynamically on open shipper loads.
+  * **Fleet & Driver Management**: Live driver registry tracking status states (Active/Idle/Offline) and vehicle allocation.
 * **Full-Fidelity Driver App**:
   * **Active Trip Tracker**: Interactive status steps (Arrive, Load, Transit, Deliver) with live route tracking.
   * **Earnings Analyzer**: Recharts-based daily/weekly earnings graphs, wallet balance tracking, and cash-out requests.
-  * **History & Logs**: Detailed completed and cancelled shipment logs.
-  * **Profile & KYC**: Personal data fields (name, phone, license, Aadhaar) and verification badge trackers.
-  * **Settings Preferences**: Auto-accept matches, SMS/Push preferences, and sound warning alerts.
-* **Fleet Transporter Dashboard**:
-  * **Driver Registry**: Manage driver profiles, status states (Active/Idle/Offline), and add new drivers to the fleet.
-  * **Shipment Allocator**: Allocate vehicles and drivers dynamically to new bookings.
-  * **Earnings Charts**: Metric tracking for Monthly Revenue (MTD) and weekly breakdowns.
-  * **Settings Controls**: Update transporter profile and company registration records.
-* **Dynamic Role-Based Notifications**: Dynamic bell notification indicator that routes to customized notifications (e.g. system logs for Admin, load board quotes for Transporter, trip assignments/payouts for Driver).
+  * **KYC Vault**: Store personal verification fields (license, Aadhaar) with verification badge trackers.
+* **Advanced Backend Services**:
+  * **Route Optimization Engine**: Computes highly optimized pathways with real-time ETA predictions.
+  * **Razorpay Payment Gateway**: Seamless checkout experience, GST-compliant invoicing (CGST, SGST, IGST calculations), and transaction verifications.
+  * **Digital Wallet & Settlements**: Ledger entries, balance tracking, and automated transporter payout simulations.
+  * **Audited logs**: Full tracking of disputes, warehouse stocks, and audit trails.
 * **Robust Error Handling & Security**:
   * Client-side validation with specific field-level server error alerts.
   * Suppressed browser hydration warnings (autofill `fdprocessedid` mismatch resolved).
@@ -115,7 +114,6 @@ npm run dev
 
 For testing and verification, you can log in with:
 * **Admin Phone:** `9999999999` | **Password:** `Admin@123`
-* **Demo Driver Phone:** `9723133850` | **Password:** `Rajesh@123` (requires uppercase, lowercase, and numeric characters)
 
 ## 🐳 Docker Deployment
 To build and run all services in production/containers:
