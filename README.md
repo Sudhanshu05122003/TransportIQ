@@ -1,45 +1,57 @@
 # 🚀 TransportIQ — India's Smartest Logistics Platform
 
-A production-ready, real-time transportation, logistics, and supply chain management platform built for the Indian market. Inspired by BlackBuck and Delhivery.
+An enterprise-architected, real-time transportation, logistics, and supply chain management platform built for the Indian market. Inspired by BlackBuck and Delhivery.
 
 ## 🎯 Overview
 
 TransportIQ connects **Shippers**, **Transporters**, **Drivers**, and **Admins** in a unified, role-based ecosystem for freight movement across India.
 
-### Key Features
-* **Role-Based Portals**: Tailored interfaces for Shippers, Transporters, Drivers, and Admins.
-* **Interactive Shipper Portal**:
-  * **Shipment Booking**: Map-based pickup/drop locations, vehicle selection, and dynamic pricing rules.
-  * **Live GPS Tracking**: Real-time driver tracking with route map visualization (powered by Leaflet.js).
-  * **Notifications Tray**: Dynamic bell notification indicator showing unread counts and quick navigation.
-* **Transporter Marketplace (Load Board)**:
-  * **Bidding Engine**: Transporters can place bids and quotes dynamically on open shipper loads.
-  * **Fleet & Driver Management**: Live driver registry tracking status states (Active/Idle/Offline) and vehicle allocation.
-* **Full-Fidelity Driver App**:
-  * **Active Trip Tracker**: Interactive status steps (Arrive, Load, Transit, Deliver) with live route tracking.
-  * **Earnings Analyzer**: Recharts-based daily/weekly earnings graphs, wallet balance tracking, and cash-out requests.
-  * **KYC Vault**: Store personal verification fields (license, Aadhaar) with verification badge trackers.
-* **Advanced Backend Services**:
-  * **Route Optimization Engine**: Computes highly optimized pathways with real-time ETA predictions.
-  * **Razorpay Payment Gateway**: Seamless checkout experience, GST-compliant invoicing (CGST, SGST, IGST calculations), and transaction verifications.
-  * **Digital Wallet & Settlements**: Ledger entries, balance tracking, and automated transporter payout simulations.
-  * **Audited logs**: Full tracking of disputes, warehouse stocks, and audit trails.
-* **Robust Error Handling & Security**:
-  * Client-side validation with specific field-level server error alerts.
-  * Suppressed browser hydration warnings (autofill `fdprocessedid` mismatch resolved).
-  * Highly stable, camelCase Redis v4 Rate Limiter (`pTTL`/`pExpire`) with failsafe offline mock fallbacks.
+### 🏗️ Architecture Overview
+
+```
+                      +----------------------------------+
+                      |     Next.js 16 App Router UI     |
+                      |  (Shipper / Transporter / Driver) |
+                      +----------------+-----------------+
+                                       | HTTP / WebSockets
+                                       v
+                      +----------------+-----------------+
+                      |     Express.js API Gateway       |
+                      +----------------+-----------------+
+                                       |
+    +------------------+---------------+---------------+-------------------+
+    |                  |                               |                   |
+    v                  v                               v                   v
++---+------------+  +--+---------------+     +---------+-------+  +--------+--------+
+|  PostgreSQL    |  | Redis v4 Cache   |     | Apache Kafka    |  | Socket.IO      |
+|  + PostGIS     |  | & Rate Limiter   |     | Event Streaming |  | Live Tracking  |
++----------------+  +------------------+     +-----------------+  +-----------------+
+```
+
+### ⚡ Feature Implementation Matrix
+
+| Capability | Status | Implementation Details |
+|---|---|---|
+| **Geospatial & Routing** | ✅ Implemented | PostGIS point-in-polygon queries, Haversine distance math, Leaflet route rendering |
+| **Realtime Tracking** | ✅ Implemented | Socket.IO location broadcast, status state-machine (Booking -> Transit -> Delivered) |
+| **Authentication & RBAC** | ✅ Implemented | JWT + bcrypt auth, role-gated API middleware, verification badge tracking |
+| **Payment Gateway** | ✅ Implemented | Razorpay integration, GST breakdown (CGST/SGST/IGST), digital wallet ledger |
+| **Event Pipeline** | ✅ Implemented | Apache Kafka producer/consumer pipeline for asynchronous shipment lifecycle events |
+| **Decision & Pricing Engine** | ⚙️ Heuristic / Rule-Based | Intent matching, route heuristics, dynamic fare calculation, demand estimation |
+| **Failsafe System** | ✅ Failsafe Enabled | Graceful Redis & payment gateway fallback handling for local development |
 
 ## 🏗️ Tech Stack
 
 | Layer | Technology |
 |---|---|
-| **Frontend** | Next.js 14+ (App Router), Tailwind CSS, Recharts, Leaflet.js, React Icons |
-| **Backend** | Node.js, Express.js, Socket.IO, Sequelize ORM |
-| **Database** | PostgreSQL (PostGIS), Redis (v4 client) |
-| **Auth** | JWT + bcrypt + OTP |
-| **Payments** | Razorpay |
+| **Frontend** | Next.js 16+ (App Router), React 19, Tailwind CSS v4, Recharts, Leaflet.js, React Icons |
+| **Backend** | Node.js (v20+), Express.js, Socket.IO, Sequelize ORM |
+| **Database** | PostgreSQL 15+ (PostGIS extension), Redis (v4 client) |
+| **Messaging** | Apache Kafka & Zookeeper |
+| **Auth** | JWT + bcrypt + OTP verification |
+| **Payments** | Razorpay Integration |
 | **Maps** | Leaflet.js / OpenStreetMap |
-| **DevOps** | Docker, GitHub Actions |
+| **DevOps** | Docker, Docker Compose, GitHub Actions |
 
 ## 📁 Project Structure
 

@@ -7,9 +7,9 @@ services:
     container_name: transportiq-db
     restart: unless-stopped
     environment:
-      POSTGRES_DB: transportiq
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: transportiq_dev_2024
+      POSTGRES_DB: ${POSTGRES_DB:-transportiq}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-transportiq_dev_2024}
     ports:
       - "5432:5432"
     volumes:
@@ -51,7 +51,7 @@ services:
       DB_PORT: 5432
       DB_NAME: transportiq
       DB_USER: postgres
-      DB_PASSWORD: transportiq_dev_2024
+      DB_PASSWORD: ${DB_PASSWORD:-transportiq_dev_2024}
       REDIS_HOST: redis
       REDIS_PORT: 6379
       KAFKA_BROKER: kafka:29092
